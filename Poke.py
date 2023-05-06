@@ -20,12 +20,16 @@ imagem_fundo = pygame.image.load(os.path.join(pasta_img, 'BACKGROUND.jpg')).conv
 pygame.display.set_caption('Pokecin')
 
 sprite_sheet = pygame.image.load(os.path.join(pasta_img,'correr.png')).convert_alpha()
-icone_coracao = pygame.image.load(os.path.join(pasta_img, 'coracao.png')).convert_alpha()
-icone_pedra = pygame.image.load(os.path.join(pasta_img, "pedra.png")).convert_alpha()
-som_colisao = pygame.mixer.Sound(os.path.join(pasta_sons, 'pedra_colis.wav'))
-icone_lento = pygame.image.load(os.path.join(pasta_img, "lama.png")).convert_alpha()
-icone_moeda = pygame.image.load(os.path.join(pasta_img, "moeda.png")).convert_alpha()
+icone_heart = pygame.image.load(os.path.join(pasta_img, 'heart.png')).convert_alpha()
+icone_pokeball = pygame.image.load(os.path.join(pasta_img, "pokeball.png")).convert_alpha()
+icone_flash = pygame.image.load(os.path.join(pasta_img, "flash.png")).convert_alpha()
+icone_star = pygame.image.load(os.path.join(pasta_img, "star.png")).convert_alpha()
 icone_teclas = pygame.image.load(os.path.join(pasta_img, "Teclas.png")).convert_alpha()
+#aud_fundo = pygame.mixer.Sound(os.path.join(pasta_sons, '???.wav'))
+aud_star = pygame.mixer.Sound(os.path.join(pasta_sons, 'estrela.wav'))
+aud_flash = pygame.mixer.Sound(os.path.join(pasta_sons, 'raio.wav'))
+#aud_pokeball = pygame.mixer.Sound(os.path.join(pasta_sons, '???.wav'))
+aud_gameover = pygame.mixer.Sound(os.path.join(pasta_sons, 'gameover.wav'))
 WHITE = (255, 255, 255)
 PRETO = (0,0,0)
 
@@ -47,9 +51,9 @@ class Pikachu(pygame.sprite.Sprite):
         self.corre = False
         self.direcao = 1
         self.vidas = 3
-        self.icone_coracao = pygame.image.load(os.path.join(pasta_img, 'coracao.png')).convert_alpha()
-        self.icone_coracao = pygame.transform.scale(self.icone_coracao, (30, 30))
-        self.lento = 0
+        self.icone_heart = pygame.image.load(os.path.join(pasta_img, 'heart.png')).convert_alpha()
+        self.icone_heart = pygame.transform.scale(self.icone_heart, (30, 30))
+        self.rapido = 0
         self.score = 0
 
     def correr(self):
@@ -75,25 +79,25 @@ class Pikachu(pygame.sprite.Sprite):
         if self.direcao == -1:
             self.image = pygame.transform.flip(self.image, True, False)
 
-        if self.lento > 0:
-            self.lento -= 1
+        if self.rapido > 0:
+            self.rapido -= 1
     
-    def lentidao(self):
-        self.lento = 120
+    def rapidao(self):
+        self.rapido = 120
 
     def desenha_vidas(self):
         for i in range(self.vidas):
-            pos_x = largura - 600 - (i+1) * (self.icone_coracao.get_width() + 5)
+            pos_x = largura - 600 - (i+1) * (self.icone_heart.get_width() + 5)
             pos_y = 10
-            tela.blit(self.icone_coracao, (pos_x, pos_y))
+            tela.blit(self.icone_heart, (pos_x, pos_y))
 
-class Pedra(pygame.sprite.Sprite):
+class Pokeball(pygame.sprite.Sprite):
     def __init__(self):
         pygame.sprite.Sprite.__init__(self)
-        self.icone_pedra = pygame.image.load(os.path.join(pasta_img, 'pedra.png')).convert_alpha()
-        self.icone_pedra = pygame.transform.scale(self.icone_pedra, (40, 40))
-        self.image = self.icone_pedra
-        self.rect = self.icone_pedra.get_rect()
+        self.icone_pokeball = pygame.image.load(os.path.join(pasta_img, 'pokeball.png')).convert_alpha()
+        self.icone_pokeball = pygame.transform.scale(self.icone_pokeball, (40, 40))
+        self.image = self.icone_pokeball
+        self.rect = self.icone_pokeball.get_rect()
         self.rect.x = randrange(largura - self.rect.width)
         self.rect.y = -self.rect.height
         self.velocidade = 5
@@ -103,13 +107,13 @@ class Pedra(pygame.sprite.Sprite):
         if self.rect.top > altura:
             self.kill()
 
-class ItemLento(pygame.sprite.Sprite):
+class Rapidez(pygame.sprite.Sprite):
     def __init__(self):
         pygame.sprite.Sprite.__init__(self)
-        self.icone_lento = pygame.image.load(os.path.join(pasta_img, 'lama.png')).convert_alpha()
-        self.icone_lento = pygame.transform.scale(self.icone_lento, (40, 40))
-        self.image = self.icone_lento
-        self.rect = self.icone_lento.get_rect()
+        self.icone_flash = pygame.image.load(os.path.join(pasta_img, 'flash.png')).convert_alpha()
+        self.icone_flash = pygame.transform.scale(self.icone_flash, (40, 40))
+        self.image = self.icone_flash
+        self.rect = self.icone_flash.get_rect()
         self.rect.x = randrange(largura - self.rect.width)
         self.rect.y = -self.rect.height
         self.velocidade = 5
@@ -122,10 +126,10 @@ class ItemLento(pygame.sprite.Sprite):
 class Moeda(pygame.sprite.Sprite):
     def __init__(self):
         pygame.sprite.Sprite.__init__(self)
-        self.icone_moeda = pygame.image.load(os.path.join(pasta_img, 'moeda.png')).convert_alpha()
-        self.icone_moeda = pygame.transform.scale(self.icone_moeda, (40, 40))
-        self.image = self.icone_moeda
-        self.rect = self.icone_moeda.get_rect()
+        self.icone_star = pygame.image.load(os.path.join(pasta_img, 'star.png')).convert_alpha()
+        self.icone_star = pygame.transform.scale(self.icone_star, (40, 40))
+        self.image = self.icone_star
+        self.rect = self.icone_star.get_rect()
         self.rect.x = randrange(largura - self.rect.width)
         self.rect.y = -self.rect.height
         self.velocidade = 5
@@ -139,12 +143,16 @@ class Moeda(pygame.sprite.Sprite):
 todas_sprites = pygame.sprite.Group()
 pika = Pikachu()
 todas_sprites.add(pika)
-grupo_pedras = pygame.sprite.Group()
-todas_sprites.add(grupo_pedras)
+
+grupo_pokeballs = pygame.sprite.Group()
+todas_sprites.add(grupo_pokeballs)
+
 grupo_velocidade = pygame.sprite.Group()
 todas_sprites.add(grupo_velocidade)
-grupo_lentidao = pygame.sprite.Group()
-todas_sprites.add(grupo_lentidao)
+
+grupo_rapidez = pygame.sprite.Group()
+todas_sprites.add(grupo_rapidez)
+
 grupo_moedas = pygame.sprite.Group()
 todas_sprites.add(grupo_moedas)
 
@@ -167,47 +175,47 @@ while tela_inicio:
     
 
     fonte = pygame.font.SysFont("Arial",30)
-    str_start = fonte.render("Pressione Espaço Para Iniciar",True,WHITE)
+    str_start = fonte.render("Pressione espaço para iniciar",True,WHITE)
     tela.blit(str_start,((largura-str_start.get_width())//2,altura-60))
 
-    fonte = pygame.font.SysFont("Arial",30)
-    str_instrucao = fonte.render("Instruções:",True,WHITE)
-    tela.blit(str_instrucao,((largura-str_instrucao.get_width())//2,altura-315))
+    #fonte = pygame.font.SysFont("Arial",30)
+    #str_instrucao = fonte.render("Instruções:",True,WHITE)
+    #tela.blit(str_instrucao,((largura-str_instrucao.get_width())//2,altura-315))
 
 
-    icone_coracao = pygame.transform.scale(icone_coracao, (30, 30))
-    tela.blit(icone_coracao,(100,altura-260))
+    icone_heart = pygame.transform.scale(icone_heart, (30, 30))
+    tela.blit(icone_heart,(100,altura-260))
 
     fonte = pygame.font.SysFont("Arial",15)
-    str_coracao = fonte.render("Coração: Você nasce com 3 e deve evitar com que ele chegue a zero",True,WHITE)
+    str_coracao = fonte.render("Coração: Você tem 3 e deve evitar que atinja zero",True,WHITE)
     tela.blit(str_coracao,(140,altura-255))
 
-    icone_pedra = pygame.transform.scale(icone_pedra, (30, 30))
-    tela.blit(icone_pedra,(100,altura-230))
+    icone_pokeball = pygame.transform.scale(icone_pokeball, (30, 30))
+    tela.blit(icone_pokeball,(100,altura-230))
 
     fonte = pygame.font.SysFont("Arial",15)
-    str_pedra = fonte.render("Pokebola: Cada uma que te atinge te tira uma vida",True,WHITE)
-    tela.blit(str_pedra,(140,altura-225))
+    str_pokeball = fonte.render("Pokebola: Remove uma vida",True,WHITE)
+    tela.blit(str_pokeball,(140,altura-225))
 
-    icone_lento = pygame.transform.scale(icone_lento, (30, 30))
-    tela.blit(icone_lento,(100,altura-200))
+    icone_flash = pygame.transform.scale(icone_flash, (30, 30))
+    tela.blit(icone_flash,(100,altura-200))
 
     fonte = pygame.font.SysFont("Arial",15)
     str_lento = fonte.render("Raio: Deixa o Pikachu mais rápido",True,WHITE)
     tela.blit(str_lento,(140,altura-195))
     
-    icone_moeda = pygame.transform.scale(icone_moeda, (30, 30))
-    tela.blit(icone_moeda,(100,altura-170))
+    icone_star = pygame.transform.scale(icone_star, (30, 30))
+    tela.blit(icone_star,(100,altura-170))
 
     fonte = pygame.font.SysFont("Arial",15)
-    str_moeda = fonte.render("Estrela: Aumenta em 1 o seu score a cada Estrela pega",True,WHITE)
+    str_moeda = fonte.render("Estrela: Aumenta seu score em 1",True,WHITE)
     tela.blit(str_moeda,(140,altura-165))
 
     icone_teclas = pygame.transform.scale(icone_teclas , (30, 30))
     tela.blit(icone_teclas,(100,altura-140))
 
     fonte = pygame.font.SysFont("Arial",15)
-    str_teclas = fonte.render("Pressione direita para ir para direita e esquerda para ir para esquerda",True,WHITE)
+    str_teclas = fonte.render("Pressione as teclas direcionais (esquerda/direita) para se movimentar",True,WHITE)
     tela.blit(str_teclas,(140,altura-135))
 
 
@@ -216,6 +224,7 @@ while tela_inicio:
     if keys[pygame.K_SPACE]:
         tela_inicio = False
         inicio = True
+
     pygame.display.flip()
 
 while inicio:
@@ -223,7 +232,6 @@ while inicio:
     tela.blit(imagem_fundo,(0, 0))
     pika.desenha_vidas()
 
-    
     for event in pygame.event.get():
         if event.type == QUIT:
             pygame.quit()
@@ -232,35 +240,37 @@ while inicio:
     if pika.vidas <= 0:
         inicio = False
         game_over = True
+        aud_gameover.play()
 
 
     if randrange(100) < 2:
-        pedra = Pedra()
-        grupo_pedras.add(pedra)
-        item = ItemLento()
-        grupo_lentidao.add(item)
+        pokeball = Pokeball()
+        grupo_pokeballs.add(pokeball)
+        rapidez = Rapidez()
+        grupo_rapidez.add(rapidez)
         moeda = Moeda()
         grupo_moedas.add(moeda)
 
-    grupo_pedras.update()
-    grupo_pedras.draw(tela)
-    grupo_lentidao.update()
-    grupo_lentidao.draw(tela)
+    grupo_pokeballs.update()
+    grupo_pokeballs.draw(tela)
+
+    grupo_rapidez.update()
+    grupo_rapidez.draw(tela)
+
     grupo_moedas.update()
     grupo_moedas.draw(tela)
 
-    if pygame.sprite.spritecollide(pika, grupo_pedras, True, pygame.sprite.collide_mask):
+    if pygame.sprite.spritecollide(pika, grupo_pokeballs, True, pygame.sprite.collide_mask):
         pika.vidas -= 1
-        som_colisao.play()
-        if pika.vidas == 0:
-            
-            pass
+        #aud_pokeball.play()
 
-    if pygame.sprite.spritecollide(pika, grupo_lentidao, True, pygame.sprite.collide_mask):
-        pika.lentidao()
+    if pygame.sprite.spritecollide(pika, grupo_rapidez, True, pygame.sprite.collide_mask):
+        pika.rapidao()
+        aud_flash.play()
 
     if pygame.sprite.spritecollide(pika, grupo_moedas, True, pygame.sprite.collide_mask):
         pika.score += 1
+        aud_star.play()
 
     font = pygame.font.SysFont("Arial", 30)
     score_text = font.render("Score: " + str(pika.score), True, WHITE)
@@ -269,16 +279,16 @@ while inicio:
     keys = pygame.key.get_pressed()
     
     if keys[pygame.K_RIGHT]:
-        if pika.lento > 0:
-            pika.rect.x += 3
+        if pika.rapido > 0:
+            pika.rect.x += 20
         else:
-            pika.rect.x += 15
+            pika.rect.x += 9
 
     if keys[pygame.K_LEFT]:
-        if pika.lento > 0:
-            pika.rect.x -= 3
+        if pika.rapido > 0:
+            pika.rect.x -= 20
         else:
-            pika.rect.x -= 15
+            pika.rect.x -= 9
     
 
     todas_sprites.draw(tela)
