@@ -25,6 +25,7 @@ icone_pedra = pygame.image.load(os.path.join(pasta_img, "pedra.png")).convert_al
 som_colisao = pygame.mixer.Sound(os.path.join(pasta_sons, 'pedra_colis.wav'))
 icone_lento = pygame.image.load(os.path.join(pasta_img, "lama.png")).convert_alpha()
 icone_moeda = pygame.image.load(os.path.join(pasta_img, "moeda.png")).convert_alpha()
+icone_teclas = pygame.image.load(os.path.join(pasta_img, "Teclas.png")).convert_alpha()
 WHITE = (255, 255, 255)
 PRETO = (0,0,0)
 
@@ -82,7 +83,7 @@ class Pikachu(pygame.sprite.Sprite):
 
     def desenha_vidas(self):
         for i in range(self.vidas):
-            pos_x = largura - 10 - (i+1) * (self.icone_coracao.get_width() + 5)
+            pos_x = largura - 600 - (i+1) * (self.icone_coracao.get_width() + 5)
             pos_y = 10
             tela.blit(self.icone_coracao, (pos_x, pos_y))
 
@@ -163,7 +164,7 @@ while tela_inicio:
     fonte = pygame.font.SysFont("impact",70)
     str_pokecin = fonte.render("POKECIN",True,WHITE)
     tela.blit(str_pokecin,((largura-str_pokecin.get_width())//2,10))
-    keys = pygame.key.get_pressed()
+    
 
     fonte = pygame.font.SysFont("Arial",30)
     str_start = fonte.render("Pressione Espaço Para Iniciar",True,WHITE)
@@ -189,12 +190,28 @@ while tela_inicio:
     tela.blit(str_pedra,(140,altura-225))
 
     icone_lento = pygame.transform.scale(icone_lento, (30, 30))
-    tela.blit(icone_lento,100,altura-200)
+    tela.blit(icone_lento,(100,altura-200))
 
     fonte = pygame.font.SysFont("Arial",15)
     str_lento = fonte.render("Raio: Deixa o Pikachu mais rápido",True,WHITE)
     tela.blit(str_lento,(140,altura-195))
+    
+    icone_moeda = pygame.transform.scale(icone_moeda, (30, 30))
+    tela.blit(icone_moeda,(100,altura-170))
 
+    fonte = pygame.font.SysFont("Arial",15)
+    str_moeda = fonte.render("Estrela: Aumenta em 1 o seu score a cada Estrela pega",True,WHITE)
+    tela.blit(str_moeda,(140,altura-165))
+
+    icone_teclas = pygame.transform.scale(icone_teclas , (30, 30))
+    tela.blit(icone_teclas,(100,altura-140))
+
+    fonte = pygame.font.SysFont("Arial",15)
+    str_teclas = fonte.render("Pressione direita para ir para direita e esquerda para ir para esquerda",True,WHITE)
+    tela.blit(str_teclas,(140,altura-135))
+
+
+    keys = pygame.key.get_pressed()
 
     if keys[pygame.K_SPACE]:
         tela_inicio = False
@@ -205,11 +222,18 @@ while inicio:
     relogio.tick(30)
     tela.blit(imagem_fundo,(0, 0))
     pika.desenha_vidas()
+
+    
     for event in pygame.event.get():
         if event.type == QUIT:
             pygame.quit()
             exit()
     
+    if pika.vidas <= 0:
+        inicio = False
+        game_over = True
+
+
     if randrange(100) < 2:
         pedra = Pedra()
         grupo_pedras.add(pedra)
@@ -255,7 +279,29 @@ while inicio:
             pika.rect.x -= 3
         else:
             pika.rect.x -= 15
+    
 
     todas_sprites.draw(tela)
     todas_sprites.update()
+    pygame.display.flip()
+
+while game_over:
+
+    tela.fill((0,0,0))
+
+    for event in pygame.event.get():
+        if event.type == QUIT:
+            pygame.quit()
+            exit()
+
+
+    fonte = pygame.font.SysFont("impact",90)
+    str_game_over = fonte.render("GAME OVER",True,(255,0,0))
+    tela.blit(str_game_over,((largura-str_game_over.get_width())//2,altura//2- 100))
+
+    font = pygame.font.SysFont("impact", 40)
+    score_text = font.render("Score: " + str(pika.score), True, WHITE)
+    tela.blit(score_text, (largura - score_text.get_width() - 310, 250))
+    
+
     pygame.display.flip()
