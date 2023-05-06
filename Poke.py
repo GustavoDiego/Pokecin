@@ -24,7 +24,8 @@ icone_coracao = pygame.image.load(os.path.join(pasta_img, 'coracao.png')).conver
 icone_pedra = pygame.image.load(os.path.join(pasta_img, "pedra.png")).convert_alpha()
 som_colisao = pygame.mixer.Sound(os.path.join(pasta_sons, 'pedra_colis.wav'))
 icone_lento = pygame.image.load(os.path.join(pasta_img, "lama.png")).convert_alpha()
-
+icone_moeda = pygame.image.load(os.path.join(pasta_img, "moeda.png")).convert_alpha()
+WHITE = (255, 255, 255)
 
 class Pikachu(pygame.sprite.Sprite):
     def __init__(self):
@@ -47,6 +48,7 @@ class Pikachu(pygame.sprite.Sprite):
         self.icone_coracao = pygame.image.load(os.path.join(pasta_img, 'coracao.png')).convert_alpha()
         self.icone_coracao = pygame.transform.scale(self.icone_coracao, (30, 30))
         self.lento = 0
+        self.score = 0
 
     def correr(self):
          self.corre = True
@@ -115,6 +117,22 @@ class ItemLento(pygame.sprite.Sprite):
         if self.rect.top > altura:
             self.kill()
 
+class Moeda(pygame.sprite.Sprite):
+    def __init__(self):
+        pygame.sprite.Sprite.__init__(self)
+        self.icone_moeda = pygame.image.load(os.path.join(pasta_img, 'moeda.png')).convert_alpha()
+        self.icone_moeda = pygame.transform.scale(self.icone_moeda, (40, 40))
+        self.image = self.icone_moeda
+        self.rect = self.icone_moeda.get_rect()
+        self.rect.x = randrange(largura - self.rect.width)
+        self.rect.y = -self.rect.height
+        self.velocidade = 5
+    
+    def update(self):
+        self.rect.y += self.velocidade
+        if self.rect.top > altura:
+            self.kill()
+
 
 todas_sprites = pygame.sprite.Group()
 pika = Pikachu()
@@ -125,6 +143,8 @@ grupo_velocidade = pygame.sprite.Group()
 todas_sprites.add(grupo_velocidade)
 grupo_lentidao = pygame.sprite.Group()
 todas_sprites.add(grupo_lentidao)
+grupo_moedas = pygame.sprite.Group()
+todas_sprites.add(grupo_moedas)
 
 relogio = pygame.time.Clock()
 
@@ -142,11 +162,15 @@ while True:
         grupo_pedras.add(pedra)
         item = ItemLento()
         grupo_lentidao.add(item)
+        moeda = Moeda()
+        grupo_moedas.add(moeda)
 
     grupo_pedras.update()
     grupo_pedras.draw(tela)
     grupo_lentidao.update()
     grupo_lentidao.draw(tela)
+    grupo_moedas.update()
+    grupo_moedas.draw(tela)
 
     if pygame.sprite.spritecollide(pika, grupo_pedras, True, pygame.sprite.collide_mask):
         pika.vidas -= 1
@@ -157,6 +181,13 @@ while True:
 
     if pygame.sprite.spritecollide(pika, grupo_lentidao, True, pygame.sprite.collide_mask):
         pika.lentidao()
+
+    if pygame.sprite.spritecollide(pika, grupo_moedas, True, pygame.sprite.collide_mask):
+        pika.score += 1
+
+    font = pygame.font.SysFont("Arial", 30)
+    score_text = font.render("Score: " + str(pika.score), True, WHITE)
+    tela.blit(score_text, (largura - score_text.get_width() - 10, 10))
 
     keys = pygame.key.get_pressed()
     
