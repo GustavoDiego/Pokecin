@@ -26,6 +26,7 @@ som_colisao = pygame.mixer.Sound(os.path.join(pasta_sons, 'pedra_colis.wav'))
 icone_lento = pygame.image.load(os.path.join(pasta_img, "lama.png")).convert_alpha()
 icone_moeda = pygame.image.load(os.path.join(pasta_img, "moeda.png")).convert_alpha()
 WHITE = (255, 255, 255)
+PRETO = (0,0,0)
 
 class Pikachu(pygame.sprite.Sprite):
     def __init__(self):
@@ -148,7 +149,59 @@ todas_sprites.add(grupo_moedas)
 
 relogio = pygame.time.Clock()
 
-while True:
+tela_inicio = True
+
+while tela_inicio:
+    relogio.tick(30)
+    tela.fill(PRETO)
+
+    for event in pygame.event.get():
+        if event.type == QUIT:
+            pygame.quit()
+            exit()
+
+    fonte = pygame.font.SysFont("impact",70)
+    str_pokecin = fonte.render("POKECIN",True,WHITE)
+    tela.blit(str_pokecin,((largura-str_pokecin.get_width())//2,10))
+    keys = pygame.key.get_pressed()
+
+    fonte = pygame.font.SysFont("Arial",30)
+    str_start = fonte.render("Pressione Espaço Para Iniciar",True,WHITE)
+    tela.blit(str_start,((largura-str_start.get_width())//2,altura-60))
+
+    fonte = pygame.font.SysFont("Arial",30)
+    str_instrucao = fonte.render("Instruções:",True,WHITE)
+    tela.blit(str_instrucao,((largura-str_instrucao.get_width())//2,altura-315))
+
+
+    icone_coracao = pygame.transform.scale(icone_coracao, (30, 30))
+    tela.blit(icone_coracao,(100,altura-260))
+
+    fonte = pygame.font.SysFont("Arial",15)
+    str_coracao = fonte.render("Coração: Você nasce com 3 e deve evitar com que ele chegue a zero",True,WHITE)
+    tela.blit(str_coracao,(140,altura-255))
+
+    icone_pedra = pygame.transform.scale(icone_pedra, (30, 30))
+    tela.blit(icone_pedra,(100,altura-230))
+
+    fonte = pygame.font.SysFont("Arial",15)
+    str_pedra = fonte.render("Pokebola: Cada uma que te atinge te tira uma vida",True,WHITE)
+    tela.blit(str_pedra,(140,altura-225))
+
+    icone_lento = pygame.transform.scale(icone_lento, (30, 30))
+    tela.blit(icone_lento,100,altura-200)
+
+    fonte = pygame.font.SysFont("Arial",15)
+    str_lento = fonte.render("Raio: Deixa o Pikachu mais rápido",True,WHITE)
+    tela.blit(str_lento,(140,altura-195))
+
+
+    if keys[pygame.K_SPACE]:
+        tela_inicio = False
+        inicio = True
+    pygame.display.flip()
+
+while inicio:
     relogio.tick(30)
     tela.blit(imagem_fundo,(0, 0))
     pika.desenha_vidas()
