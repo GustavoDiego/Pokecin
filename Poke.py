@@ -32,7 +32,9 @@ aud_flash = pygame.mixer.Sound(os.path.join(pasta_sons, 'raio.wav'))
 aud_gameover = pygame.mixer.Sound(os.path.join(pasta_sons, 'gameover.wav'))
 WHITE = (255, 255, 255)
 PRETO = (0,0,0)
-
+VERMELHO = (255,0,0)
+AZUL = (98,135,210)
+AMARELO = (255,255,2)
 class Pikachu(pygame.sprite.Sprite):
     def __init__(self):
         pygame.sprite.Sprite.__init__(self)
@@ -162,7 +164,7 @@ tela_inicio = True
 
 while tela_inicio:
     relogio.tick(30)
-    tela.fill(PRETO)
+    tela.fill(AZUL)
 
     for event in pygame.event.get():
         if event.type == QUIT:
@@ -170,7 +172,7 @@ while tela_inicio:
             exit()
 
     fonte = pygame.font.SysFont("impact",70)
-    str_pokecin = fonte.render("POKECIN",True,WHITE)
+    str_pokecin = fonte.render("POKECIN",True,AMARELO)
     tela.blit(str_pokecin,((largura-str_pokecin.get_width())//2,10))
     
 
@@ -178,24 +180,22 @@ while tela_inicio:
     str_start = fonte.render("Pressione espaço para iniciar",True,WHITE)
     tela.blit(str_start,((largura-str_start.get_width())//2,altura-60))
 
-    #fonte = pygame.font.SysFont("Arial",30)
-    #str_instrucao = fonte.render("Instruções:",True,WHITE)
-    #tela.blit(str_instrucao,((largura-str_instrucao.get_width())//2,altura-315))
+    
 
 
     icone_heart = pygame.transform.scale(icone_heart, (30, 30))
-    tela.blit(icone_heart,(100,altura-260))
+    tela.blit(icone_heart,(100,altura-280))
 
     fonte = pygame.font.SysFont("Arial",15)
     str_coracao = fonte.render("Coração: Você tem 3 e deve evitar que atinja zero",True,WHITE)
-    tela.blit(str_coracao,(140,altura-255))
+    tela.blit(str_coracao,(140,altura-275))
 
     icone_pokeball = pygame.transform.scale(icone_pokeball, (30, 30))
-    tela.blit(icone_pokeball,(100,altura-230))
+    tela.blit(icone_pokeball,(100,altura-240))
 
     fonte = pygame.font.SysFont("Arial",15)
     str_pokeball = fonte.render("Pokebola: Remove uma vida",True,WHITE)
-    tela.blit(str_pokeball,(140,altura-225))
+    tela.blit(str_pokeball,(140,altura-235))
 
     icone_flash = pygame.transform.scale(icone_flash, (30, 30))
     tela.blit(icone_flash,(100,altura-200))
@@ -205,18 +205,18 @@ while tela_inicio:
     tela.blit(str_lento,(140,altura-195))
     
     icone_star = pygame.transform.scale(icone_star, (30, 30))
-    tela.blit(icone_star,(100,altura-170))
+    tela.blit(icone_star,(100,altura-160))
 
     fonte = pygame.font.SysFont("Arial",15)
     str_moeda = fonte.render("Estrela: Aumenta seu score em 1",True,WHITE)
-    tela.blit(str_moeda,(140,altura-165))
+    tela.blit(str_moeda,(140,altura-155))
 
     icone_teclas = pygame.transform.scale(icone_teclas , (30, 30))
-    tela.blit(icone_teclas,(100,altura-140))
+    tela.blit(icone_teclas,(100,altura-120))
 
     fonte = pygame.font.SysFont("Arial",15)
     str_teclas = fonte.render("Pressione as teclas direcionais (esquerda/direita) para se movimentar",True,WHITE)
-    tela.blit(str_teclas,(140,altura-135))
+    tela.blit(str_teclas,(140,altura-115))
 
 
     keys = pygame.key.get_pressed()
@@ -272,10 +272,10 @@ while inicio:
         pika.score += 1
         aud_star.play()
 
-    font = pygame.font.SysFont("Arial", 30)
+    font = pygame.font.SysFont("impact", 30)
     score_text = font.render("Score: " + str(pika.score), True, WHITE)
     tela.blit(score_text, (largura - score_text.get_width() - 10, 10))
-
+    tela.blit(icone_star,(largura - score_text.get_width() - 45, 15))
     keys = pygame.key.get_pressed()
     
     if keys[pygame.K_RIGHT]:
@@ -306,7 +306,7 @@ while game_over:
 
 
     fonte = pygame.font.SysFont("impact",90)
-    str_game_over = fonte.render("GAME OVER",True,(255,0,0))
+    str_game_over = fonte.render("GAME OVER",True,VERMELHO)
     tela.blit(str_game_over,((largura-str_game_over.get_width())//2,altura//2- 100))
 
     font = pygame.font.SysFont("impact", 40)
