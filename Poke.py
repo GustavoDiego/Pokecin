@@ -20,6 +20,11 @@ imagem_fundo = pygame.image.load(os.path.join(pasta_img, 'BACKGROUND.jpg')).conv
 pygame.display.set_caption('Pokecin')
 
 sprite_sheet = pygame.image.load(os.path.join(pasta_img,'correr.png')).convert_alpha()
+icone_coracao = pygame.image.load(os.path.join(pasta_img, 'coracao.png')).convert_alpha()
+icone_pedra = pygame.image.load(os.path.join(pasta_img, "pedra.png")).convert_alpha()
+som_colisao = pygame.mixer.Sound(os.path.join(pasta_sons, 'pedra_colis.wav'))
+icone_lento = pygame.image.load(os.path.join(pasta_img, "lama.png")).convert_alpha()
+
 
 class Pikachu(pygame.sprite.Sprite):
     def __init__(self):
@@ -38,6 +43,10 @@ class Pikachu(pygame.sprite.Sprite):
         self.rect.center = (100,altura-64)
         self.corre = False
         self.direcao = 1
+        self.vidas = 3
+        self.icone_coracao = pygame.image.load(os.path.join(pasta_img, 'coracao.png')).convert_alpha()
+        self.icone_coracao = pygame.transform.scale(self.icone_coracao, (30, 30))
+        self.lento = 0
 
     def correr(self):
          self.corre = True
@@ -53,6 +62,7 @@ class Pikachu(pygame.sprite.Sprite):
             self.rect.right = largura
         
         keys = pygame.key.get_pressed()
+
         if keys[K_RIGHT]:
             self.direcao = 1
         elif keys[K_LEFT]:
@@ -61,25 +71,106 @@ class Pikachu(pygame.sprite.Sprite):
         if self.direcao == -1:
             self.image = pygame.transform.flip(self.image, True, False)
 
+        if self.lento > 0:
+            self.lento -= 1
+    
+    def lentidao(self):
+        self.lento = 120
+
+    def desenha_vidas(self):
+        for i in range(self.vidas):
+            pos_x = largura - 10 - (i+1) * (self.icone_coracao.get_width() + 5)
+            pos_y = 10
+            tela.blit(self.icone_coracao, (pos_x, pos_y))
+
+class Pedra(pygame.sprite.Sprite):
+    def __init__(self):
+        pygame.sprite.Sprite.__init__(self)
+        self.icone_pedra = pygame.image.load(os.path.join(pasta_img, 'pedra.png')).convert_alpha()
+        self.icone_pedra = pygame.transform.scale(self.icone_pedra, (40, 40))
+        self.image = self.icone_pedra
+        self.rect = self.icone_pedra.get_rect()
+        self.rect.x = randrange(largura - self.rect.width)
+        self.rect.y = -self.rect.height
+        self.velocidade = 5
+
+    def update(self):
+        self.rect.y += self.velocidade
+        if self.rect.top > altura:
+            self.kill()
+
+class ItemLento(pygame.sprite.Sprite):
+    def __init__(self):
+        pygame.sprite.Sprite.__init__(self)
+        self.icone_lento = pygame.image.load(os.path.join(pasta_img, 'lama.png')).convert_alpha()
+        self.icone_lento = pygame.transform.scale(self.icone_lento, (40, 40))
+        self.image = self.icone_lento
+        self.rect = self.icone_lento.get_rect()
+        self.rect.x = randrange(largura - self.rect.width)
+        self.rect.y = -self.rect.height
+        self.velocidade = 5
+
+    def update(self):
+        self.rect.y += self.velocidade
+        if self.rect.top > altura:
+            self.kill()
+
+
 todas_sprites = pygame.sprite.Group()
 pika = Pikachu()
 todas_sprites.add(pika)
+grupo_pedras = pygame.sprite.Group()
+todas_sprites.add(grupo_pedras)
+grupo_velocidade = pygame.sprite.Group()
+todas_sprites.add(grupo_velocidade)
+grupo_lentidao = pygame.sprite.Group()
+todas_sprites.add(grupo_lentidao)
 
 relogio = pygame.time.Clock()
+
 while True:
     relogio.tick(30)
     tela.blit(imagem_fundo,(0, 0))
+    pika.desenha_vidas()
     for event in pygame.event.get():
         if event.type == QUIT:
             pygame.quit()
             exit()
+    
+    if randrange(100) < 2:
+        pedra = Pedra()
+        grupo_pedras.add(pedra)
+        item = ItemLento()
+        grupo_lentidao.add(item)
+
+    grupo_pedras.update()
+    grupo_pedras.draw(tela)
+    grupo_lentidao.update()
+    grupo_lentidao.draw(tela)
+
+    if pygame.sprite.spritecollide(pika, grupo_pedras, True, pygame.sprite.collide_mask):
+        pika.vidas -= 1
+        som_colisao.play()
+        if pika.vidas == 0:
+            
+            pass
+
+    if pygame.sprite.spritecollide(pika, grupo_lentidao, True, pygame.sprite.collide_mask):
+        pika.lentidao()
 
     keys = pygame.key.get_pressed()
     
     if keys[pygame.K_RIGHT]:
-        pika.rect.x += 6
+        if pika.lento > 0:
+            pika.rect.x += 3
+        else:
+            pika.rect.x += 15
+
     if keys[pygame.K_LEFT]:
-        pika.rect.x -= 6
+        if pika.lento > 0:
+            pika.rect.x -= 3
+        else:
+            pika.rect.x -= 15
 
     todas_sprites.draw(tela)
     todas_sprites.update()
