@@ -14,7 +14,7 @@ pygame.mixer.init()
 largura = 748
 altura = 421
 
-tela = pygame.display.set_mode((largura,altura))
+tela = pygame.display.set_mode((largura, altura))
 pygame.display.init()
 imagem_fundo = pygame.image.load(os.path.join(pasta_img, 'BACKGROUND.jpg')).convert()
 pygame.display.set_caption('Pokecin')
@@ -25,23 +25,24 @@ icone_pokeball = pygame.image.load(os.path.join(pasta_img, "pokeball.png")).conv
 icone_flash = pygame.image.load(os.path.join(pasta_img, "flash.png")).convert_alpha()
 icone_star = pygame.image.load(os.path.join(pasta_img, "star.png")).convert_alpha()
 icone_teclas = pygame.image.load(os.path.join(pasta_img, "Teclas.png")).convert_alpha()
-#aud_fundo = pygame.mixer.Sound(os.path.join(pasta_sons, '???.wav'))
 aud_star = pygame.mixer.Sound(os.path.join(pasta_sons, 'estrela.wav'))
 aud_flash = pygame.mixer.Sound(os.path.join(pasta_sons, 'raio.wav'))
-#aud_pokeball = pygame.mixer.Sound(os.path.join(pasta_sons, '???.wav'))
+aud_pokeball = pygame.mixer.Sound(os.path.join(pasta_sons, 'pokeball.wav'))
 aud_gameover = pygame.mixer.Sound(os.path.join(pasta_sons, 'gameover.wav'))
+
 WHITE = (255, 255, 255)
-PRETO = (0,0,0)
-VERMELHO = (255,0,0)
-AZUL = (98,135,210)
-AMARELO = (255,255,2)
+PRETO = (0, 0, 0)
+VERMELHO = (255, 0, 0)
+AZUL = (98, 135, 210)
+AMARELO = (255, 255, 2)
+
 class Pikachu(pygame.sprite.Sprite):
     def __init__(self):
         pygame.sprite.Sprite.__init__(self)
         self.imagens_pikachu = []
         for i in range (4):
-                    img = sprite_sheet.subsurface((i*56,0),(56,30))
-                    img = pygame.transform.scale(img,(56*3,30*3))
+                    img = sprite_sheet.subsurface((i*56, 0),(56, 30))
+                    img = pygame.transform.scale(img,(56*3, 30*3))
                     self.imagens_pikachu.append(img)
 
         self.index_lista = 0
@@ -49,7 +50,7 @@ class Pikachu(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.posy_inicial = altura-64 
         self.mask = pygame.mask.from_surface(self.image)
-        self.rect.center = (100,altura-64)
+        self.rect.center = (100, altura-64)
         self.corre = False
         self.direcao = 1
         self.vidas = 3
@@ -102,7 +103,7 @@ class Pokeball(pygame.sprite.Sprite):
         self.rect = self.icone_pokeball.get_rect()
         self.rect.x = randrange(largura - self.rect.width)
         self.rect.y = -self.rect.height
-        self.velocidade = 5
+        self.velocidade = 7
 
     def update(self):
         self.rect.y += self.velocidade
@@ -118,7 +119,7 @@ class Rapidez(pygame.sprite.Sprite):
         self.rect = self.icone_flash.get_rect()
         self.rect.x = randrange(largura - self.rect.width)
         self.rect.y = -self.rect.height
-        self.velocidade = 5
+        self.velocidade = 9
 
     def update(self):
         self.rect.y += self.velocidade
@@ -134,7 +135,7 @@ class Moeda(pygame.sprite.Sprite):
         self.rect = self.icone_star.get_rect()
         self.rect.x = randrange(largura - self.rect.width)
         self.rect.y = -self.rect.height
-        self.velocidade = 5
+        self.velocidade = 6
     
     def update(self):
         self.rect.y += self.velocidade
@@ -171,53 +172,48 @@ while tela_inicio:
             pygame.quit()
             exit()
 
-    fonte = pygame.font.SysFont("impact",70)
-    str_pokecin = fonte.render("POKECIN",True,AMARELO)
-    tela.blit(str_pokecin,((largura-str_pokecin.get_width())//2,10))
+    fonte = pygame.font.SysFont("impact", 70)
+    str_pokecin = fonte.render("POKECIN", True, AMARELO)
+    tela.blit(str_pokecin, ((largura-str_pokecin.get_width()) // 2, 10))
     
-
-    fonte = pygame.font.SysFont("Arial",30)
-    str_start = fonte.render("Pressione espaço para iniciar",True,WHITE)
-    tela.blit(str_start,((largura-str_start.get_width())//2,altura-60))
-
-    
-
+    fonte = pygame.font.SysFont("Arial", 30)
+    str_start = fonte.render("Pressione espaço para iniciar", True, WHITE)
+    tela.blit(str_start, ((largura-str_start.get_width()) // 2, altura-60))
 
     icone_heart = pygame.transform.scale(icone_heart, (30, 30))
-    tela.blit(icone_heart,(100,altura-280))
+    tela.blit(icone_heart, (100, altura-280))
 
-    fonte = pygame.font.SysFont("Arial",15)
-    str_coracao = fonte.render("Coração: Você tem 3 e deve evitar que atinja zero",True,WHITE)
-    tela.blit(str_coracao,(140,altura-275))
+    fonte = pygame.font.SysFont("Arial", 15)
+    str_coracao = fonte.render("Coração: Você tem 3 e deve evitar que atinja zero", True, WHITE)
+    tela.blit(str_coracao, (140, altura-275))
 
     icone_pokeball = pygame.transform.scale(icone_pokeball, (30, 30))
-    tela.blit(icone_pokeball,(100,altura-240))
+    tela.blit(icone_pokeball, (100,altura-240))
 
-    fonte = pygame.font.SysFont("Arial",15)
-    str_pokeball = fonte.render("Pokebola: Remove uma vida",True,WHITE)
-    tela.blit(str_pokeball,(140,altura-235))
+    fonte = pygame.font.SysFont("Arial", 15)
+    str_pokeball = fonte.render("Pokebola: Remove uma vida", True, WHITE)
+    tela.blit(str_pokeball,(140, altura-235))
 
     icone_flash = pygame.transform.scale(icone_flash, (30, 30))
-    tela.blit(icone_flash,(100,altura-200))
+    tela.blit(icone_flash,(100, altura-200))
 
-    fonte = pygame.font.SysFont("Arial",15)
-    str_lento = fonte.render("Raio: Deixa o Pikachu mais rápido",True,WHITE)
-    tela.blit(str_lento,(140,altura-195))
+    fonte = pygame.font.SysFont("Arial", 15)
+    str_lento = fonte.render("Raio: Deixa o Pikachu mais rápido", True, WHITE)
+    tela.blit(str_lento,(140, altura-195))
     
     icone_star = pygame.transform.scale(icone_star, (30, 30))
-    tela.blit(icone_star,(100,altura-160))
+    tela.blit(icone_star,(100, altura-160))
 
-    fonte = pygame.font.SysFont("Arial",15)
-    str_moeda = fonte.render("Estrela: Aumenta seu score em 1",True,WHITE)
-    tela.blit(str_moeda,(140,altura-155))
+    fonte = pygame.font.SysFont("Arial", 15)
+    str_moeda = fonte.render("Estrela: Aumenta seu score em 1", True, WHITE)
+    tela.blit(str_moeda,(140, altura-155))
 
     icone_teclas = pygame.transform.scale(icone_teclas , (30, 30))
-    tela.blit(icone_teclas,(100,altura-120))
+    tela.blit(icone_teclas,(100, altura-120))
 
-    fonte = pygame.font.SysFont("Arial",15)
-    str_teclas = fonte.render("Pressione as teclas direcionais (esquerda/direita) para se movimentar",True,WHITE)
-    tela.blit(str_teclas,(140,altura-115))
-
+    fonte = pygame.font.SysFont("Arial", 15)
+    str_teclas = fonte.render("Pressione as teclas direcionais (esquerda/direita) para se movimentar", True, WHITE)
+    tela.blit(str_teclas,(140, altura-115))
 
     keys = pygame.key.get_pressed()
 
@@ -242,14 +238,17 @@ while inicio:
         game_over = True
         aud_gameover.play()
 
-
-    if randrange(100) < 2:
-        pokeball = Pokeball()
-        grupo_pokeballs.add(pokeball)
-        rapidez = Rapidez()
-        grupo_rapidez.add(rapidez)
+    if randrange(100) < 5:
         moeda = Moeda()
         grupo_moedas.add(moeda)
+
+    if randrange(100) < 3:
+        pokeball = Pokeball()
+        grupo_pokeballs.add(pokeball)
+
+    if randrange(100) < 1:
+        rapidez = Rapidez()
+        grupo_rapidez.add(rapidez)
 
     grupo_pokeballs.update()
     grupo_pokeballs.draw(tela)
@@ -262,7 +261,7 @@ while inicio:
 
     if pygame.sprite.spritecollide(pika, grupo_pokeballs, True, pygame.sprite.collide_mask):
         pika.vidas -= 1
-        #aud_pokeball.play()
+        aud_pokeball.play()
 
     if pygame.sprite.spritecollide(pika, grupo_rapidez, True, pygame.sprite.collide_mask):
         pika.rapidao()
@@ -290,28 +289,25 @@ while inicio:
         else:
             pika.rect.x -= 9
     
-
     todas_sprites.draw(tela)
     todas_sprites.update()
     pygame.display.flip()
 
 while game_over:
 
-    tela.fill((0,0,0))
+    tela.fill((AZUL))
 
     for event in pygame.event.get():
         if event.type == QUIT:
             pygame.quit()
             exit()
 
-
     fonte = pygame.font.SysFont("impact",90)
-    str_game_over = fonte.render("GAME OVER",True,VERMELHO)
-    tela.blit(str_game_over,((largura-str_game_over.get_width())//2,altura//2- 100))
+    str_game_over = fonte.render("GAME OVER", True, VERMELHO)
+    tela.blit(str_game_over, ((largura-str_game_over.get_width()) // 2, altura // 2 - 100))
 
     font = pygame.font.SysFont("impact", 40)
     score_text = font.render("Score: " + str(pika.score), True, WHITE)
     tela.blit(score_text, (largura - score_text.get_width() - 310, 250))
     
-
     pygame.display.flip()
